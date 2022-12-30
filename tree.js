@@ -102,97 +102,104 @@ class Tree {
   }
 
   levelOrder(cb) {
-    let queue = [this.root];
-    let levelOrderList = [];
+    const queue = [this.root];
+    const levelOrderList = [];
 
     while (queue.length > 0) {
-      let currentNode = queue.shift();
-      cb ? cb(currentNode.data) : levelOrderList.push(currentNode.data);
+      const currentNode = queue.shift();
+      if (cb) cb(currentNode.data);
+      else levelOrderList.push(currentNode.data);
 
       if (currentNode.left !== null) queue.push(currentNode.left);
-      if (currentNode.right !== null) queue.push(currentNode.right)
-      
+      if (currentNode.right !== null) queue.push(currentNode.right);
     }
-    if (levelOrderList.length > 0) return levelOrderList;
+    if (levelOrderList.length > 0) {
+      return levelOrderList;
+    }
+    return null;
   }
 
-  inorder(cb, root = this.root){
+  inorder(cb, root = this.root) {
     if (root === null) return;
-    this.inorder(cb, root.left)
-    cb ? cb(root.data) : this.inOrder.push(root.data);
-    this.inorder(cb, root.right)
+    this.inorder(cb, root.left);
+    if (cb) cb(root.data);
+    else this.inOrder.push(root.data);
+    this.inorder(cb, root.right);
   }
 
-  printInorder(cb, root = this.root){
-    this.inOrder = []
-    this.inorder(cb, root)
-    return this.inOrder
+  printInorder(cb, root = this.root) {
+    this.inOrder = [];
+    this.inorder(cb, root);
+    return this.inOrder;
   }
 
-  preorder(cb, root = this.root){
+  preorder(cb, root = this.root) {
     if (root === null) return;
-    cb ? cb(root.data) : this.preOrder.push(root.data);
-    this.preorder(cb, root.left)
-    this.preorder(cb, root.right)
+    if (cb) cb(root.data);
+    else this.preOrder.push(root.data);
+    this.preorder(cb, root.left);
+    this.preorder(cb, root.right);
   }
 
-  printPreorder(cb, root = this.root){
-    this.preOrder = []
-    this.preorder(cb, root)
-    return this.preOrder
+  printPreorder(cb, root = this.root) {
+    this.preOrder = [];
+    this.preorder(cb, root);
+    return this.preOrder;
   }
 
-  postorder(cb, root = this.root){
+  postorder(cb, root = this.root) {
     if (root === null) return;
-    this.postorder(cb, root.left)
-    this.postorder(cb, root.right)
-    cb ? cb(root.data) : this.postOrder.push(root.data);
+    this.postorder(cb, root.left);
+    this.postorder(cb, root.right);
+    if (cb) cb(root.data);
+    else this.postOrder.push(root.data);
   }
 
-  printPostorder(cb, root = this.root){
-    this.postOrder = []
-    this.postorder(cb, root)
-    return this.postOrder
+  printPostorder(cb, root = this.root) {
+    this.postOrder = [];
+    this.postorder(cb, root);
+    return this.postOrder;
   }
 
-  height(root = this.root){
+  height(root = this.root) {
     if (root === null) return 0;
 
-    let leftHeight = this.height(root.left);
-    let rightHeight = this.height(root.right);
-    
-    return (leftHeight > rightHeight) ? leftHeight + 1 : rightHeight + 1
+    const leftHeight = this.height(root.left);
+    const rightHeight = this.height(root.right);
+
+    return (leftHeight > rightHeight) ? leftHeight + 1 : rightHeight + 1;
   }
 
-  depth(val, root = this.root){
+  depth(val, root = this.root) {
+    let r = root;
     let count = 0;
-    while (root != null) {
-      count += 1
-      if (root.data === val) return count;
+    while (r != null) {
+      count += 1;
+      if (r.data === val) return count;
 
-      (root.data > val) ? root = root.left : root = root.right
+      if (r.data > val) r = root.left;
+      else r = r.right;
     }
+    return null;
   }
 
-  isBalanced(root = this.root){
-    let heightLeft = this.height(root.left);
-    let heightRight = this.height(root.right);
+  isBalanced(root = this.root) {
+    const heightLeft = this.height(root.left);
+    const heightRight = this.height(root.right);
     if ((Math.max(heightLeft, heightRight) - Math.min(heightLeft, heightRight)) > 1) {
-      return false
-    }else{
-      return true
+      return false;
     }
+    return true;
   }
 
-  rebalance(root = this.root){
+  rebalance(root = this.root) {
     if (this.isBalanced(root)) {
-      return "It's already balanced"
-    }else{
-      this.inorder()
-      let arrayBalanced = this.inOrder
-      const treeBalanced = new Tree(arrayBalanced)
-      this.root = treeBalanced.root
+      return "It's already balanced";
     }
+    const arrayBalanced = this.printInorder();
+    const treeBalanced = new Tree(arrayBalanced);
+    this.root = treeBalanced.root;
+    return null;
   }
 }
 
