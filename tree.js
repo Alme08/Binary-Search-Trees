@@ -123,17 +123,36 @@ class Tree {
     this.inorder(cb, root.right)
   }
 
+  printInorder(cb, root = this.root){
+    this.inOrder = []
+    this.inorder(cb, root)
+    return this.inOrder
+  }
+
   preorder(cb, root = this.root){
     if (root === null) return;
     cb ? cb(root.data) : this.preOrder.push(root.data);
     this.preorder(cb, root.left)
     this.preorder(cb, root.right)
   }
+
+  printPreorder(cb, root = this.root){
+    this.preOrder = []
+    this.preorder(cb, root)
+    return this.preOrder
+  }
+
   postorder(cb, root = this.root){
     if (root === null) return;
     this.postorder(cb, root.left)
     this.postorder(cb, root.right)
     cb ? cb(root.data) : this.postOrder.push(root.data);
+  }
+
+  printPostorder(cb, root = this.root){
+    this.postOrder = []
+    this.postorder(cb, root)
+    return this.postOrder
   }
 
   height(root = this.root){
