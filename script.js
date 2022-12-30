@@ -36,6 +36,9 @@ const buildTree = (arr) => {
 class Tree {
   constructor(array) {
     this.root = buildTree(array);
+    this.inOrder = [];
+    this.preOrder = [];
+    this.postOrder = [];
   }
 
   prettyPrint(node = this.root, prefix = '', isLeft = true) {
@@ -60,12 +63,12 @@ class Tree {
 
   insert(data, root = this.root) {
     let r = root;
-    if (r.data === data) {
-      console.log("Couldn't insert");
-      return r;
-    }
     if (r === null) {
       r = new Node(data);
+      return r;
+    }
+    if (r.data === data) {
+      console.log("Couldn't insert");
       return r;
     }
 
@@ -97,9 +100,61 @@ class Tree {
 
     return root;
   }
+
+  levelOrder(cb) {
+    let queue = [this.root];
+    let levelOrderList = [];
+
+    while (queue.length > 0) {
+      let currentNode = queue.shift();
+      cb ? cb(currentNode.data) : levelOrderList.push(currentNode.data);
+
+      if (currentNode.left !== null) queue.push(currentNode.left);
+      if (currentNode.right !== null) queue.push(currentNode.right)
+      
+    }
+    if (levelOrderList.length > 0) return levelOrderList;
+  }
+
+  inorder(cb, root = this.root){
+    if (root === null) return;
+    this.inorder(cb, root.left)
+    cb ? cb(root.data) : this.inOrder.push(root.data);
+    this.inorder(cb, root.right)
+  }
+
+  preorder(cb, root = this.root){
+    if (root === null) return;
+    cb ? cb(root.data) : this.preOrder.push(root.data);
+    this.preorder(cb, root.left)
+    this.preorder(cb, root.right)
+  }
+  postorder(cb, root = this.root){
+    if (root === null) return;
+    this.postorder(cb, root.left)
+    this.postorder(cb, root.right)
+    cb ? cb(root.data) : this.postOrder.push(root.data);
+  }
+
+  height(root = this.root){
+    if (root === null) return 0;
+
+    let leftHeight = this.height(root.left);
+    let rightHeight = this.height(root.right);
+    
+    return (leftHeight > rightHeight) ? leftHeight + 1 : rightHeight + 1
+  }
+
+  depth(val, root = this.root){
+    let count = 0;
+    while (root != null) {
+      count += 1
+      if (root.data === val) return count;
+
+      (root.data > val) ? root = root.left : root = root.right
+    }
+  }
 }
 
 const binaryTree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-// binaryTree.delete(4);
 binaryTree.prettyPrint();
-console.log(binaryTree.find(7));
